@@ -5,17 +5,19 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required, permission_required
 
 
 
 # Create your views here.
 def home(request):
+    
     productos = Producto.objects.all()
     data = {
         'productos' : productos
     }
     return render(request, 'app/home.html', data)
-
+#@login_required  restringir si el usuairo no esta registrado y no dejara que entre a la pestaña en este caso a galeria, no lo dejara amenos que tenga un registro
 def galeria(request):
     return render(request, 'app/galeria.html')
 
@@ -34,7 +36,7 @@ def contacto(request):
             
     return render(request, 'app/contacto.html',data)
 
-
+@permission_required('app.add_producto')
 def agregar_producto(request):
     
     data = {
@@ -50,7 +52,7 @@ def agregar_producto(request):
             data["form"] = formulario
     return render(request, 'app/producto/agregar.html',data)
 
-
+@permission_required('app.view_producto')
 def listar_productos(request):
     
     productos = Producto.objects.all()
@@ -68,6 +70,7 @@ def listar_productos(request):
     }
     return render(request, 'app/producto/listar.html',data)
 
+@permission_required('app.change-producto')
 def modificar_productos(request, id):
     
     producto = get_object_or_404(Producto, id=id)
@@ -86,6 +89,7 @@ def modificar_productos(request, id):
     
     return render(request, 'app/producto/modificar.html',data)
 
+@permission_required('app.delete_producto')
 def eliminar_productos(request, id):
     
     producto = get_object_or_404(Producto, id=id)

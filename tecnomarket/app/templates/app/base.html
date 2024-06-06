@@ -33,16 +33,32 @@
                     <li>
                         <a href="{% url 'galeria' %}">Galería</a>
                     </li>
+
+                    {% if perms.app.add_producto %}
                     <li>
                         <a href="{% url 'agregar_producto'%}">Agregar Producto</a>
                     </li>
+                    {% endif %}
+                    
+                    {% if perms.app.view_producto %}
                     <li>
                         <a href="{% url 'listar_productos'%}">Listado Productos</a>
                     </li>
+                    {% endif %}
+                   
 
                     {% if user.is_authenticated %}
                     <li>
-                        <a href="{% url 'logout' %}">Cerrar Sesion</a>
+                        <form id="form-logout"  action="{% url 'logout' %}" method="POST" style="display: none;"> 
+                            {% csrf_token %}
+                        </form>
+                        <a href="#" onclick="salir()">Cerrar Sesion</a>
+
+                        <script>
+                            function salir() {
+                                document.getElementById("form-logout").submit();
+                            }
+                        </script>
                     </li>
                     <li>
                         <a href="#">@{{user.username}}</a>
